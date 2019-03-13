@@ -1,5 +1,12 @@
 #include <iostream>
 #include <sys/wait.h>
+#include <unistd.h>
+
+int run(const char* name)
+{
+	char* args[] = { (char*)name, (char*)0 };
+	execvp(name, args);
+}
 
 char* stack_memory()
 {
@@ -17,7 +24,9 @@ char* stack_memory()
 
 int jail(void* args)
 {
-	printf("Hello from child\n");
+	clearenv();
+
+	run("/bin/sh");
 
 	return 0;
 }
