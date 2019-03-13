@@ -34,7 +34,11 @@ int jail(void* args)
 int main(int argc, char** argv)
 {
 	printf("Hello from parent\n");
-	clone(jail, stack_memory(), SIGCHLD, 0);
+	if (clone(jail, stack_memory(), CLONE_NEWUTS | SIGCHLD, 0) == -1)
+	{
+		printf("Clone\n");
+	}
+
 	wait(nullptr);
 
 	return 0;
