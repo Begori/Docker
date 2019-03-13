@@ -26,6 +26,7 @@ int main(int argc, char** argv)
 {
 	printf("Hello from parent\n");
 	clone(jail, stack_memory(), SIGCHLD, 0);
+	wait(nullptr);
 
 	return 0;
 }
