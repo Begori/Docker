@@ -25,7 +25,8 @@ char* stack_memory()
 int jail(void* args)
 {
 	clearenv();
-
+	printf("Child PID: %d\n", getpid());
+	
 	run("/bin/sh");
 
 	return 0;
@@ -33,8 +34,9 @@ int jail(void* args)
 
 int main(int argc, char** argv)
 {
-	printf("Hello from parent\n");
-	if (clone(jail, stack_memory(), CLONE_NEWUTS | SIGCHLD, 0) == -1)
+	printf("Parent PID: %d\n", getpid());
+
+	if (clone(jail, stack_memory(), CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD, 0) == -1)
 	{
 		printf("Clone\n");
 	}
