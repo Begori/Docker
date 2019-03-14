@@ -22,11 +22,26 @@ char* stack_memory()
 	return stack + stackSize;
 }
 
-int jail(void* args)
+void setup_variables()
 {
 	clearenv();
+	setenv("TERM", "xterm", 0);
+	setenv("PATH", "/bin/:/sbin/:/usr/bin:/usr/sbin", 0);
+}
+
+void setup_root(const char* folder)
+{
+	chroot(folder);
+	chdir("/");
+}
+
+int jail(void* args)
+{
 	printf("Child PID: %d\n", getpid());
 	
+	setup_variables();
+	setup_root("./root");
+
 	run("/bin/sh");
 
 	return 0;
