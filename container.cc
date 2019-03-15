@@ -36,6 +36,21 @@ void setup_root(const char* folder)
 	chdir("/");
 }
 
+void clone_process(int(*function)(void*), int flags)
+{
+	if (clone(function, stack_memory(), flags, 0) == -1)
+	{
+		printf("Clone\n");
+	}
+
+	wait(nullptr);
+}
+
+int runThis(void* args)
+{
+	run("/bin/sh");
+}
+
 int jail(void* args)
 {
 	printf("Child PID: %d\n", getpid());
@@ -45,7 +60,7 @@ int jail(void* args)
 
 	mount("proc", "/proc", "proc", 0, 0);
 
-	run("/bin/sh");
+	clone_process(runThis, SIGCHLD);
 
 	umount("/proc");
 
@@ -56,12 +71,7 @@ int main(int argc, char** argv)
 {
 	printf("Parent PID: %d\n", getpid());
 
-	if (clone(jail, stack_memory(), CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD, 0) == -1)
-	{
-		printf("Clone\n");
-	}
-
-	wait(nullptr);
+	clone_process(jail, CLONE_NEWPID | CLONE_NEWUTS | SIGCHLD);
 
 	return 0;
 }
