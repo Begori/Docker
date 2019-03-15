@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <sys/mount.h>
 
 int run(const char* name)
 {
@@ -42,7 +43,11 @@ int jail(void* args)
 	setup_variables();
 	setup_root("./root");
 
+	mount("proc", "/proc", "proc", 0, 0);
+
 	run("/bin/sh");
+
+	umount("/proc");
 
 	return 0;
 }
