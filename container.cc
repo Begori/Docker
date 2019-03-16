@@ -3,6 +3,13 @@
 #include <unistd.h>
 #include <sys/mount.h>
 
+#define CGROUP_FOLDER "/sys/fs/cgroup/pids/container/"
+
+void limitProcessesCreation()
+{
+	mkdir(CGROUP_FOLDER, S_IRUSR | S_IWUSR);
+}
+
 int run(const char* name)
 {
 	char* args[] = { (char*)name, (char*)0 };
